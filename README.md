@@ -2,7 +2,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+To get started copy arcgis assets into public folder
+
+```bash
+cp -r node_modules/@arcgis/core/assets public/arcgis
+```
+
+Secondly, run the development server:
 
 ```bash
 npm run dev
