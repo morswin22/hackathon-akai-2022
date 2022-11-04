@@ -1,10 +1,20 @@
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import {Box} from '@mui/material'
 import '../styles/globals.css'
+import '../styles/Map.css'
 
-import esriConfig from "@arcgis/core/config.js";
-esriConfig.assetsPath = "./assets";
-
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function Application({ Component, pageProps }) {
+  const queryClient = new QueryClient()
+  return (
+      <QueryClientProvider client={queryClient}>
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={true} />
+      </QueryClientProvider>
+  )
 }
 
-export default MyApp
+export default Application
