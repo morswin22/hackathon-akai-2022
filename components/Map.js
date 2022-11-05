@@ -15,7 +15,7 @@ const POZNAN = {
 
 const DEFAULT_ZOOM = 12;
 
-export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, onMarkerClicked, onMarkHovered, mapPointToIDFnRef }) {
+export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, clearAllPins, onMarkerClicked, onMarkHovered, mapPointToIDFnRef }) {
   const { data: pins, isSuccess } = usePins();
 
   const mapContainer = useRef(null);
@@ -33,7 +33,7 @@ export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, on
       },
     });
 
-  const AddPointMarker = (longitude, latitude, color = [226, 119, 40]) => {
+  const AddPointMarker = (longitude, latitude, color, id) => {
     let point = { //Create a point
       type: "point",
       longitude: longitude,
@@ -53,7 +53,7 @@ export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, on
       symbol: simpleMarkerSymbol
     });
 
-    mapPointToIDRef.current[pointGraphic.uid] = /* ID FROM DB */1;
+    mapPointToIDRef.current[pointGraphic.uid] = id;
 
     mapGraphics.current.add(pointGraphic);
   }
@@ -67,7 +67,7 @@ export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, on
     esriConfig.assetsPath = '/arcgis';
 
     const map = new WebMap({
-      basemap: "arcgis-nova",
+      basemap: "arcgis-topographic",
     });
 
     mapGraphics.current = new GraphicsLayer({
@@ -81,6 +81,10 @@ export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, on
       center: [POZNAN.longitude, POZNAN.latitude],
       zoom: DEFAULT_ZOOM,
     });
+
+    const ClearAllTags = () => mapGraphics.current.removeAll();
+
+    clearAllPins.current = ClearAllTags;
 
     mapView.current.ui.move(["zoom", map], "bottom-right");
 
@@ -139,7 +143,7 @@ export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, on
 
     mapView.current.on("mouse-wheel", (event) => {
       if (onScroll != undefined) {
-        console.log("PRAWA KOBIET");
+        //console.log("PRAWA KOBIET");
         onScroll(event);
       }
     })
@@ -160,7 +164,7 @@ export default function Map({ onLMB, onRMB, onDragLRMB, onScroll, pointMaker, on
       return;
 
     for (const pin of pins) {
-      AddPointMarker(pin.longitude, pin.latitude, [pin.r, pin.g, pin.b]);
+      AddPointMarker(pin.longitude, pin.latitude, [pin.r, pin.g, pin.b], pin.id);
     }
   }, [pins, isSuccess]);
   pointMaker.current = AddPointMarker;

@@ -9,13 +9,13 @@ import { useRef, useEffect, useState } from 'react'
 
 export default function PinQuickView({x, y, isOpen, setIsOpen, id}) {
     const anchorRef = useRef(null);
-    const [quickViewData, setQuickViewData] = useState({name: 'sad'})
+    const [quickViewData, setQuickViewData] = useState({name: '', tags: []})
 
     useEffect(() => {
         if (id !== null) {
-            axios.get(`/api/pin?id=${id}`).then((responce) => {
-                setQuickViewData( responce.data )
-                console.log(responce.data)
+            axios.get(`/api/pin?id=${id}`).then((response) => {
+                setQuickViewData( response.data )
+                console.log(response.data)
             });
         }
     }, [id]);
@@ -48,12 +48,12 @@ export default function PinQuickView({x, y, isOpen, setIsOpen, id}) {
                                     {quickViewData.name}
                                 </Typography>
                                 <Box sx={{display: 'flex', justifyContent:'center'}}>
-                                    {/* {tags && tags.map((tag) => (
+                                    {quickViewData.tags && quickViewData.tags.map(({tag}) => (
                                         <Chip
                                             label={tag}
                                             size='small'
                                         />
-                                    ))} */}
+                                    ))}
                                 </Box>
                             </Paper>
                         </ClickAwayListener>

@@ -4,45 +4,21 @@ CREATE TABLE IF NOT EXISTS "tags_list" (
 	"tag"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "locations" (
-	"id"	INTEGER,
-	"longitude"	REAL NOT NULL,
-	"latitude"	REAL NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
 CREATE TABLE IF NOT EXISTS "visibility" (
 	"id"	INTEGER,
 	"type"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "pin_colors" (
-	"id"	INTEGER,
-	"color"	TEXT NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
-CREATE TABLE IF NOT EXISTS "events" (
-	"id"	INTEGER,
-	"name"	TEXT NOT NULL,
-	"description"	TEXT,
-	"date"	INTEGER NOT NULL,
-	"location_id"	INTEGER NOT NULL,
-	"pin_color_id"	INTEGER NOT NULL,
-	"visibility"	INTEGER NOT NULL,
-	FOREIGN KEY("visibility") REFERENCES "visibility"("id"),
-	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("pin_color_id") REFERENCES "pin_colors"("id"),
-	FOREIGN KEY("location_id") REFERENCES "locations"("id")
-);
 CREATE TABLE IF NOT EXISTS "tags" (
-	"event_id"	INTEGER NOT NULL,
+	"pin_id"	INTEGER NOT NULL,
 	"tag_id"	INTEGER NOT NULL,
-	FOREIGN KEY("event_id") REFERENCES "events"("id"),
+	FOREIGN KEY("pin_id") REFERENCES "pins"("id"),
 	FOREIGN KEY("tag_id") REFERENCES "tags_list"("id")
 );
 CREATE TABLE IF NOT EXISTS "participations" (
 	"user_id"	INTEGER NOT NULL,
-	"event_id"	INTEGER NOT NULL,
-	FOREIGN KEY("event_id") REFERENCES "events"("id"),
+	"pin_id"	INTEGER NOT NULL,
+	FOREIGN KEY("pin_id") REFERENCES "pins"("id"),
 	FOREIGN KEY("user_id") REFERENCES "users"("id")
 );
 CREATE TABLE IF NOT EXISTS "users" (
@@ -51,8 +27,55 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"password"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-INSERT INTO "locations" VALUES (1,16.9251681,52.406374);
+CREATE TABLE IF NOT EXISTS "pins" (
+	"id"	INTEGER,
+	"name"	TEXT NOT NULL,
+	"description"	TEXT,
+	"longitude"	REAL NOT NULL,
+	"latitude"	REAL NOT NULL,
+	"date_start"	INTEGER,
+	"date_end"	INTEGER,
+	"pin_color_id"	INTEGER NOT NULL,
+	"visibility"	INTEGER NOT NULL,
+	FOREIGN KEY("pin_color_id") REFERENCES "pin_colors"("id"),
+	FOREIGN KEY("visibility") REFERENCES "visibility"("id"),
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "pin_colors" (
+	"id"	INTEGER,
+	"name"	TEXT NOT NULL,
+	"r"	INTEGER NOT NULL,
+	"g"	INTEGER NOT NULL,
+	"b"	INTEGER NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+INSERT INTO "tags_list" VALUES (1,'sport');
+INSERT INTO "tags_list" VALUES (2,'concert');
+INSERT INTO "tags_list" VALUES (3,'education');
+INSERT INTO "tags_list" VALUES (4,'programming');
+INSERT INTO "tags_list" VALUES (5,'races');
+INSERT INTO "tags_list" VALUES (6,'language tandem');
+INSERT INTO "tags_list" VALUES (7,'food');
+INSERT INTO "tags_list" VALUES (8,'charity');
+INSERT INTO "tags_list" VALUES (9,'gaming');
+INSERT INTO "tags_list" VALUES (10,'party');
+INSERT INTO "tags_list" VALUES (11,'animals');
 INSERT INTO "visibility" VALUES (1,'public');
-INSERT INTO "pin_colors" VALUES (1,'255,0,255');
-INSERT INTO "events" VALUES (1,'First pin!',NULL,1667614351,1,1,1);
+INSERT INTO "visibility" VALUES (2,'friends');
+INSERT INTO "visibility" VALUES (3,'private');
+INSERT INTO "tags" VALUES (1,3);
+INSERT INTO "tags" VALUES (1,7);
+INSERT INTO "tags" VALUES (2,1);
+INSERT INTO "tags" VALUES (2,5);
+INSERT INTO "pins" VALUES (1,'First pin!',NULL,16.9251681,52.406374,1667614351,1667614352,3,1);
+INSERT INTO "pins" VALUES (2,'Second one omg!',NULL,15.9251681,51.406374,NULL,NULL,5,1);
+INSERT INTO "pins" VALUES (3,'CZARITY','',16.8904002534539,52.4267670724389,NULL,NULL,1,1);
+INSERT INTO "pins" VALUES (4,'chuj','',20.954675495156,52.0240775525326,NULL,NULL,1,1);
+INSERT INTO "pin_colors" VALUES (1,'Lawenderito',165,137,193);
+INSERT INTO "pin_colors" VALUES (2,'Sea Breath',111,183,214);
+INSERT INTO "pin_colors" VALUES (3,'Pinktido',249,140,182);
+INSERT INTO "pin_colors" VALUES (4,'Leaf Power',133,202,93);
+INSERT INTO "pin_colors" VALUES (5,'Sunny Day',255,237,81);
+INSERT INTO "pin_colors" VALUES (6,'Dirty White',240,232,205);
+INSERT INTO "pin_colors" VALUES (7,'Salomon',252,169,133);
 COMMIT;
