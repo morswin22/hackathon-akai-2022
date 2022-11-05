@@ -6,8 +6,10 @@ import Head from 'next/head';
 import { useState, useRef, useEffect } from 'react'
 import NewPinForm from '../components/Forms/NewPinForm'
 import PinQuickView from '../components/PinQuickView'
-import axios from 'axios';
+import ProfileAvatar from '../components/ProfileAvatar'
 import usePins from "../hooks/usePins"
+import LoginDialog from '../components/LoginDialog'
+import UserFriends from '../components/UserFriends'
 
 const Map = dynamic(() => import("../components/Map"), { ssr: false });
 
@@ -18,11 +20,17 @@ export default function Home() {
   const [toolbarIsOpen, setToolbarIsOpen] = useState(false)
   const [newPlaceDialogIsOpen, setNewPlaceDialogIsOpen] = useState(false)
   const [newEventDialogIsOpen, setNewEventDialogIsOpen] = useState(false)
+  const [loginDialogIsOpen, setLoginDialogIsOpen] = useState(false)
   const [quickViewIsOpen, setQuickViewIsOpen] = useState(false)
   const [quickViewUID, setQuickViewUID] = useState(null);
   const mapPointToIDFnRef = useRef(null)
   const clearAllPins = useRef(null);
-  const [{selectedTags, notSelectedTags}, setSelectedTags] = useState({selectedTags: [], notSelectedTags: []});
+  const [letters, setLetters] = useState('?')
+  const [selectedTags, setSelectedTags] = useState(null);
+  function setSelectedTags2(val) {
+    console.log('setselectedtags', val)
+    setSelectedTags(val);
+  }
 
   const pointMaker = useRef(null);
 
@@ -62,8 +70,13 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!isSuccess || !clearAllPins.current)
+    if (!isSuccess || !clearAllPins.current || selectedTags === null)
       return;
+
+    if (selectedTags.length === 0)
+      return;
+
+    // console.log(selectedTags, isSuccess, clearAllPins.current, pins);
 
     let selectedTagIds = selectedTags.map(tag => tag.id);
 
@@ -76,16 +89,19 @@ export default function Home() {
 
     clearAllPins.current();
 
+    console.log(tagsToDispaly);
+
     tagsToDispaly.forEach(e => {
       if (pointMaker.current)
         pointMaker.current(e.longitude, e.latitude, [e.r, e.g, e.b]);
     });
-  }, [selectedTags, notSelectedTags, pins, isSuccess, clearAllPins.current]);
+  }, [selectedTags, pins, isSuccess, clearAllPins.current]);
 
   return (
     <div>
       <Head>
         <link rel="icon" type="image/jpg" href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Felis_catus-cat_on_snow.jpg/1200px-Felis_catus-cat_on_snow.jpg"></link>
+        <title>Meow!</title>
       </Head>
       <Map
         onRMB={handleMapRMB}
@@ -105,7 +121,7 @@ export default function Home() {
           left: '20px'
         }}
       >
-        <Search onTagSelectionChanged={setSelectedTags} />
+        <Search onTagSelectionChanged={setSelectedTags2} />
       </Box>
       <Toolbar
         x={x}
@@ -140,6 +156,18 @@ export default function Home() {
         setIsOpen={setQuickViewIsOpen}
         id={quickViewUID ? mapPointToIDFnRef.current(quickViewUID) : null}
       />
+      <Box sx={{ position: 'absolute', top: '10px', right: '10px' }}>
+        <ProfileAvatar
+          setLoginDialogIsOpen={setLoginDialogIsOpen}
+          letters={letters}
+        />
+      </Box>
+      <LoginDialog
+        isOpen={loginDialogIsOpen}
+        setIsOpen={setLoginDialogIsOpen}
+        setLetters={setLetters}
+      />
+      <UserFriends />
     </div>
   );
 }

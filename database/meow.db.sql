@@ -12,20 +12,26 @@ CREATE TABLE IF NOT EXISTS "visibility" (
 CREATE TABLE IF NOT EXISTS "tags" (
 	"pin_id"	INTEGER NOT NULL,
 	"tag_id"	INTEGER NOT NULL,
-	FOREIGN KEY("pin_id") REFERENCES "pins"("id"),
-	FOREIGN KEY("tag_id") REFERENCES "tags_list"("id")
+	FOREIGN KEY("tag_id") REFERENCES "tags_list"("id"),
+	FOREIGN KEY("pin_id") REFERENCES "pins"("id")
 );
 CREATE TABLE IF NOT EXISTS "participations" (
 	"user_id"	INTEGER NOT NULL,
 	"pin_id"	INTEGER NOT NULL,
-	FOREIGN KEY("pin_id") REFERENCES "pins"("id"),
-	FOREIGN KEY("user_id") REFERENCES "users"("id")
+	FOREIGN KEY("user_id") REFERENCES "users"("id"),
+	FOREIGN KEY("pin_id") REFERENCES "pins"("id")
 );
 CREATE TABLE IF NOT EXISTS "users" (
 	"id"	INTEGER,
 	"username"	TEXT NOT NULL,
-	"password"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "friendships" (
+	"sender"	INTEGER NOT NULL,
+	"receiver"	INTEGER NOT NULL,
+	"invited"	INTEGER DEFAULT 0,
+	FOREIGN KEY("sender") REFERENCES "users"("id"),
+	FOREIGN KEY("receiver") REFERENCES "users"("id")
 );
 CREATE TABLE IF NOT EXISTS "pins" (
 	"id"	INTEGER,
@@ -37,6 +43,7 @@ CREATE TABLE IF NOT EXISTS "pins" (
 	"date_end"	INTEGER,
 	"pin_color_id"	INTEGER NOT NULL,
 	"visibility"	INTEGER NOT NULL,
+	"max_participients"	INTEGER DEFAULT 0,
 	FOREIGN KEY("pin_color_id") REFERENCES "pin_colors"("id"),
 	FOREIGN KEY("visibility") REFERENCES "visibility"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
@@ -67,10 +74,11 @@ INSERT INTO "tags" VALUES (1,3);
 INSERT INTO "tags" VALUES (1,7);
 INSERT INTO "tags" VALUES (2,1);
 INSERT INTO "tags" VALUES (2,5);
-INSERT INTO "pins" VALUES (1,'First pin!',NULL,16.9251681,52.406374,1667614351,1667614352,3,1);
-INSERT INTO "pins" VALUES (2,'Second one omg!',NULL,15.9251681,51.406374,NULL,NULL,5,1);
-INSERT INTO "pins" VALUES (3,'CZARITY','',16.8904002534539,52.4267670724389,NULL,NULL,1,1);
-INSERT INTO "pins" VALUES (4,'chuj','',20.954675495156,52.0240775525326,NULL,NULL,1,1);
+INSERT INTO "users" VALUES (1,'Kaczka Basia');
+INSERT INTO "users" VALUES (2,'Kaczka Krysia');
+INSERT INTO "friendships" VALUES (1,2,0);
+INSERT INTO "pins" VALUES (1,'First pin!',NULL,16.9251681,52.406374,1667614351,1667614352,3,1,5);
+INSERT INTO "pins" VALUES (2,'Second one omg!',NULL,15.9251681,51.406374,NULL,NULL,5,1,0);
 INSERT INTO "pin_colors" VALUES (1,'Lawenderito',165,137,193);
 INSERT INTO "pin_colors" VALUES (2,'Sea Breath',111,183,214);
 INSERT INTO "pin_colors" VALUES (3,'Pinktido',249,140,182);

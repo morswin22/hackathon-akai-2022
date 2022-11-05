@@ -14,7 +14,7 @@ export default function PinQuickView({x, y, isOpen, setIsOpen, id}) {
     useEffect(() => {
         if (id !== null) {
             axios.get(`/api/pin?id=${id}`).then((response) => {
-                setQuickViewData( response.data )
+                setQuickViewData( response.data ? response.data :  {name: '', tags: []})
                 console.log(response.data)
             });
         }

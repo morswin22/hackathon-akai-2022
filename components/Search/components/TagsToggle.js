@@ -17,32 +17,35 @@ export default function TagsToggle({ onTagSelectionChanged }) {
     const anchorRef = React.useRef(null);
 
     function handleDelete(labelToDelete, id) {
-        setSelectedTags((oldTags) => oldTags.filter(({ tag }) => tag !== labelToDelete))
-        setTagsToSelect((oldTags) => [...oldTags, {tag: labelToDelete, id: id}])
-        SelectionChanged();
+        setSelectedTags((oldTags) => {
+            let newSelectedTags = oldTags.filter(({ tag }) => tag !== labelToDelete);
+            onTagSelectionChanged && onTagSelectionChanged(newSelectedTags);
+            return newSelectedTags;
+        });
+        setTagsToSelect((oldTags) => [...oldTags, { tag: labelToDelete, id: id }])
+        // SelectionChanged();
     }
 
     function handleClose() {
         setMenuIsOpen(false)
     }
 
-    function SelectionChanged() {
-        if (onTagSelectionChanged != undefined) {
-            onTagSelectionChanged({ selectedTags, notSelectedTags: tagsToSelect  });
-        }
-    }
-
     function handleClickMenuItem(tagToAdd, id) {
         console.log(tagToAdd, id)
-        setTagsToSelect((oldTags) => oldTags.filter(({ tag }) => tag !== tagToAdd))
-        setSelectedTags((oldTags) => [...oldTags, {tag: tagToAdd, id: id}])
+        setTagsToSelect((oldTags) => oldTags.filter(({ tag }) => tag.tag !== tagToAdd))
+        setSelectedTags((oldTags) => {
+            let newSelectedTags = [...oldTags, { tag: tagToAdd, id: id }];
+            onTagSelectionChanged && onTagSelectionChanged(newSelectedTags);
+            return newSelectedTags;
+        });
         setMenuIsOpen(false);
-        SelectionChanged();
+        // SelectionChanged();
     }
 
     useEffect(() => {
         if (tags) {
             setSelectedTags(tags)
+            // SelectionChanged();
         }
     }, [tags])
 
@@ -84,7 +87,7 @@ export default function TagsToggle({ onTagSelectionChanged }) {
                             {/* <ClickAwayListener onClickAway={handleClose}> */}
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList>
-                                    {tagsToSelect.map(({tag, id}) => (
+                                    {tagsToSelect.map(({ tag, id }) => (
                                         <MenuItem onClick={() => handleClickMenuItem(tag, id)}>
                                             {tag}
                                         </MenuItem>
