@@ -1,9 +1,8 @@
 import axios from 'axios'
 
-function getTags() {
-    return ['sport']
-    URL = 'http://localhost:3000/api/tags'
-    responce = axios.get(URL)
+async function getTags() {
+    const URL = 'http://localhost:3000/api/tags'
+    const responce = await axios.get(URL)
     return responce.data
 }
 
